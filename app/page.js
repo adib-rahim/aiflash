@@ -9,7 +9,7 @@ import Head from "next/head";
 export default function Home() {
 
   const handleSubmit = async () => {
-    const checkoutSession = await fetch ('api/checkout_session', {
+    const checkoutSession = await fetch ('api/checkout_pro', {
       method: "POST",
       headers: {
         origin: 'http://localhost:3000'
@@ -32,6 +32,34 @@ export default function Home() {
       console.warn(error.message)
     }
   }
+
+  const handleSubmit2 = async () => {
+    const checkoutSession = await fetch ('api/checkout_regular', {
+      method: "POST",
+      headers: {
+        origin: 'http://localhost:3000'
+      },
+    })
+
+    const checkoutSessionJson = await checkoutSession.json()
+
+    if(checkoutSession.statusCode === 500){
+      console.error(checkoutSession.message)
+      return
+    }
+
+    const stripe = await getStripe()
+    const {error} = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id,
+    })
+    
+    if(error){
+      console.warn(error.message)
+    }
+  }
+
+
+
 
   return (
     <Container maxWidth="100vw">
@@ -56,7 +84,7 @@ export default function Home() {
       }}>
         <Typography variant="h2" gutterBottom>Welcome to Flashcard Saas</Typography>
         <Typography variant="h5" gutterBottom>The easiest way to make flashcards from your text</Typography>
-        <Button variant="contained" color="primary" sx = {{mt: 2}}>Get Started</Button>
+        <Button variant="contained" color="primary" sx = {{mt: 2}} >Get Started</Button>
       </Box>
       <Box sx={{my: 6}}>
         <Typography variant="h4" gutterBottom>Features</Typography>
@@ -97,7 +125,7 @@ export default function Home() {
               <Typography>{' '}
                 Access to basic flashcard features and limited storage.
               </Typography>
-              <Button variant="contained" color="primary" sx={{mt: 2}}>Choose Basic</Button>
+              <Button variant="contained" color="primary" sx={{mt: 2}} onClick={handleSubmit2}>Choose Basic</Button>
             </Box>
           </Grid>
           <Grid item xs = {12} md = {6}>

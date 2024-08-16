@@ -12,7 +12,7 @@ const ResultPage = () => {
     const session_id = searchParams.get('session_id')
 
     const [loading, setLoading] = useState(true)
-    cosnt [session, setSession] = useState(null)
+    const [session, setSession] = useState(null)
     const [error, setError] = useState(null)
 
     useEffect(() => {
