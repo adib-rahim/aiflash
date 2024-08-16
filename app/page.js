@@ -1,14 +1,15 @@
 'use client'
 import getStripe from "@/utils/get-stripe";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignOutButton, UserButton } from "@clerk/nextjs";
 import { AppBar, Box, Button, Container, Grid, Toolbar, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 import Head from "next/head";
 
 
 
 export default function Home() {
 
-  const handleSubmit = async () => {
+  const handlePro = async () => {
     const checkoutSession = await fetch ('api/checkout_pro', {
       method: "POST",
       headers: {
@@ -33,8 +34,8 @@ export default function Home() {
     }
   }
 
-  const handleSubmit2 = async () => {
-    const checkoutSession = await fetch ('api/checkout_regular', {
+  const handleBasic = async () => {
+    const checkoutSession = await fetch ('api/checkout_basic', {
       method: "POST",
       headers: {
         origin: 'http://localhost:3000'
@@ -58,6 +59,17 @@ export default function Home() {
     }
   }
 
+  const router = useRouter()
+
+  const handleGetStarted = () => {
+    router.push('/generate')
+  }
+
+  
+  const handleMyFlashcards = () => {
+    router.push('/flashcards')
+  }
+
 
 
 
@@ -68,9 +80,16 @@ export default function Home() {
         <meta name = "description" content = "Create flashcard from your text" />
       </Head>
 
-      <AppBar position = "static">
+      <AppBar position = "static" sx={{ 
+          borderBottomLeftRadius: 16, 
+          borderBottomRightRadius: 16, 
+          overflow: 'hidden' 
+        }}>
         <Toolbar>
           <Typography variant="h6" style = {{flexGrow: 1}}>Flashcard Saas</Typography>
+          <SignedIn>
+            <UserButton sx={{ mt: 2, ml: 2 }}/>
+          </SignedIn>
           <SignedOut>
             <Button color="inherit" href = "/sign-in">Login</Button>
             <Button color="inherit" href = "/sign-up">Create Account</Button>
@@ -84,9 +103,15 @@ export default function Home() {
       }}>
         <Typography variant="h2" gutterBottom>Welcome to Flashcard Saas</Typography>
         <Typography variant="h5" gutterBottom>The easiest way to make flashcards from your text</Typography>
-        <Button variant="contained" color="primary" sx = {{mt: 2}} >Get Started</Button>
+        <SignedIn>
+          <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleGetStarted}>Generate</Button>
+          <Button variant="contained" color="primary" sx={{ mt: 2, ml: 2 }} onClick={handleMyFlashcards}>My Sets</Button>
+        </SignedIn>
+        <SignedOut>
+          <Button variant="contained" color="primary" sx={{ mt: 2 }} href="/sign-up">Get Started</Button>
+        </SignedOut>
       </Box>
-      <Box sx={{my: 6}}>
+      <Box sx={{my: 6}} textAlign={'center'}>
         <Typography variant="h4" gutterBottom>Features</Typography>
         <Grid container spacing = {4}>
           <Grid item xs = {12} md = {4}>
@@ -125,7 +150,7 @@ export default function Home() {
               <Typography>{' '}
                 Access to basic flashcard features and limited storage.
               </Typography>
-              <Button variant="contained" color="primary" sx={{mt: 2}} onClick={handleSubmit2}>Choose Basic</Button>
+              <Button variant="contained" color="primary" sx={{mt: 2}} onClick={handleBasic}>Choose Basic</Button>
             </Box>
           </Grid>
           <Grid item xs = {12} md = {6}>
@@ -140,7 +165,7 @@ export default function Home() {
               <Typography>{' '}
                 Unlimited flashcards and storage with priority support.
               </Typography>
-              <Button variant="contained" color="primary" sx={{mt: 2}} onClick={handleSubmit}>Choose Pro</Button>
+              <Button variant="contained" color="primary" sx={{mt: 2}} onClick={handlePro}>Choose Pro</Button>
             </Box>
           </Grid>
         </Grid>

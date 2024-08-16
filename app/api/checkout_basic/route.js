@@ -19,7 +19,7 @@ export async function POST(req) {
             price_data: {
               currency: 'usd',
               product_data: {
-                name: 'Regular subscription',
+                name: 'Basic subscription',
               },
               unit_amount: formatAmountForStripe(5, 'usd'), // $10.00
               recurring: {
