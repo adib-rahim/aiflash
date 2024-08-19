@@ -11,7 +11,7 @@ export default function SignUpPage(){
                         flexGrow: 1,
                     }}
                 >
-                        Flashcard Saas
+                        SmartCards
                 </Typography>
                 <Button color="inherit">
                     <Link href="/sign-up" passHref>
