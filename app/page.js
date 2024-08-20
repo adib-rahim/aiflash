@@ -14,7 +14,6 @@ export default function Home() {
     const [theme, setTheme] = useState('light');
     const [studyData, setStudyData] = useState([]);
 
-    // Retrieve and apply the theme from localStorage when the page loads
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme') || 'light';
         setTheme(savedTheme);
@@ -100,13 +99,13 @@ export default function Home() {
     return (
         <Container maxWidth="100vw">
             <Head>
-                <title>Flashcard SaaS</title>
+                <title>SmartCards</title>
                 <meta name="description" content="Create flashcards from your text" />
             </Head>
 
             <AppBar position="static" sx={{ borderBottomLeftRadius: 16, borderBottomRightRadius: 16, overflow: 'hidden' }}>
                 <Toolbar>
-                    <Typography variant="h6" style={{ flexGrow: 1 }}>Flashcard SaaS</Typography>
+                    <Typography variant="h6" style={{ flexGrow: 1 }}>SmartCards</Typography>
                     <IconButton onClick={handleThemeToggle} color="inherit">
                         {theme === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
                     </IconButton>
@@ -134,7 +133,7 @@ export default function Home() {
 
             <Box sx={{ my: 6, textAlign: 'center' }}>
                 <Typography variant="h4" gutterBottom>Progress Tracker</Typography>
-                <StudySession onSave={saveSession} />
+                <StudySession onSave={saveSession} theme={theme} />
                 <AnalyticsDashboard />
             </Box>
 
