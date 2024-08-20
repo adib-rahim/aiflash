@@ -7,15 +7,21 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import AnalyticsDashboard from '@/app/components/AnalyticsDashboard';
+import StudySession from '@/app/components/StudySession';
 
 export default function Home() {
     const [theme, setTheme] = useState('light');
+    const [studyData, setStudyData] = useState([]);
 
     // Retrieve and apply the theme from localStorage when the page loads
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme') || 'light';
         setTheme(savedTheme);
         document.body.className = savedTheme;
+
+        const data = JSON.parse(localStorage.getItem('studyData')) || [];
+        setStudyData(data);
     }, []);
 
     const handleThemeToggle = () => {
@@ -48,7 +54,7 @@ export default function Home() {
         if (error) {
             console.warn(error.message);
         }
-    }
+    };
 
     const handleBasic = async () => {
         const checkoutSession = await fetch('api/checkout_basic', {
@@ -73,17 +79,23 @@ export default function Home() {
         if (error) {
             console.warn(error.message);
         }
-    }
+    };
 
     const router = useRouter();
 
     const handleGetStarted = () => {
         router.push('/generate');
-    }
+    };
 
     const handleMyFlashcards = () => {
         router.push('/flashcards');
-    }
+    };
+
+    const saveSession = (session) => {
+        const updatedData = [...studyData, session];
+        setStudyData(updatedData);
+        localStorage.setItem('studyData', JSON.stringify(updatedData));
+    };
 
     return (
         <Container maxWidth="100vw">
@@ -108,11 +120,8 @@ export default function Home() {
                 </Toolbar>
             </AppBar>
 
-            <Box sx={{
-                textAlign: 'center',
-                my: 4,
-            }}>
-                <Typography variant="h2" gutterBottom>Welcome to Flashcard SaaS</Typography>
+            <Box sx={{ textAlign: 'center', my: 4 }}>
+                <Typography variant="h2" gutterBottom>Welcome to SmartCards</Typography>
                 <Typography variant="h5" gutterBottom>The easiest way to make flashcards from your text</Typography>
                 <SignedIn>
                     <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleGetStarted}>Generate</Button>
@@ -122,26 +131,27 @@ export default function Home() {
                     <Button variant="contained" color="primary" sx={{ mt: 2 }} href="/sign-up">Get Started</Button>
                 </SignedOut>
             </Box>
+
+            <Box sx={{ my: 6, textAlign: 'center' }}>
+                <Typography variant="h4" gutterBottom>Progress Tracker</Typography>
+                <StudySession onSave={saveSession} />
+                <AnalyticsDashboard />
+            </Box>
+
             <Box sx={{ my: 6 }} textAlign={'center'}>
                 <Typography variant="h4" gutterBottom>Features</Typography>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={4}>
                         <Typography variant="h6" gutterBottom>Easy Flashcard Generation</Typography>
-                        <Typography>{' '}
-                            Simply paste your text and our AI will generate flashcards for you. No need to spend hours creating them yourself.
-                        </Typography>
+                        <Typography>Simply paste your text and our AI will generate flashcards for you. No need to spend hours creating them yourself.</Typography>
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <Typography variant="h6" gutterBottom>Smart Flashcards</Typography>
-                        <Typography>{' '}
-                            Our AI will generate concise flashcards for you, so you can focus on studying the most efficient way.
-                        </Typography>
+                        <Typography>Our AI will generate concise flashcards for you, so you can focus on studying the most efficient way.</Typography>
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <Typography variant="h6" gutterBottom>Accessible Anywhere</Typography>
-                        <Typography>{' '}
-                            Access your flashcards from anywhere, on any device, at any time. Study on the go!
-                        </Typography>
+                        <Typography>Access your flashcards from anywhere, on any device, at any time. Study on the go!</Typography>
                     </Grid>
                 </Grid>
             </Box>
@@ -150,32 +160,18 @@ export default function Home() {
                 <Typography variant="h4" gutterBottom>Pricing</Typography>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={6}>
-                        <Box sx={{
-                            p: 3,
-                            border: '1px solid',
-                            borderColor: 'grey.300',
-                            borderRadius: 2,
-                        }}>
+                        <Box sx={{ p: 3, border: '1px solid', borderColor: 'grey.300', borderRadius: 2 }}>
                             <Typography variant="h5" gutterBottom>Basic</Typography>
                             <Typography variant="h6" gutterBottom>$5 / month</Typography>
-                            <Typography>{' '}
-                                Access to basic flashcard features and limited storage.
-                            </Typography>
+                            <Typography>Access to basic flashcard features and limited storage.</Typography>
                             <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleBasic}>Choose Basic</Button>
                         </Box>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <Box sx={{
-                            p: 3,
-                            border: '1px solid',
-                            borderColor: 'grey.300',
-                            borderRadius: 2,
-                        }}>
+                        <Box sx={{ p: 3, border: '1px solid', borderColor: 'grey.300', borderRadius: 2 }}>
                             <Typography variant="h5" gutterBottom>Pro</Typography>
                             <Typography variant="h6" gutterBottom>$10 / month</Typography>
-                            <Typography>{' '}
-                                Unlimited flashcards and storage with priority support.
-                            </Typography>
+                            <Typography>Unlimited flashcards and storage with priority support.</Typography>
                             <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handlePro}>Choose Pro</Button>
                         </Box>
                     </Grid>
